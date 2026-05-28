@@ -8,7 +8,7 @@ constexpr int INF = 0x3f3f3f3f;
 
 struct PathResult {
     int node_count = 0;
-    int route[N]{};
+    int route[N];
     int total_distance = 0;
     int total_time = 0;
     int total_cost = 0;
@@ -26,7 +26,7 @@ PathResult constrainedShortestPath(
 
 PathResult waypointPath(
     int start, int end,
-    const std::vector<int>& waypoints,
+    int waypoints[N],
     int weight_type
 );
 
