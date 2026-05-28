@@ -9,7 +9,7 @@ struct Dijkstra{
     // 输入数据
     int start; // 起点
     int end; // 终点
-    int weight_type; // 权重类型: 0-路程, 1-时间, 2-费用, 3-综合评分
+    int weight_type; // 权重类型: 0-路程, 1-时间, 2-费用
 
     // 输出数据
     int nodes; // 节点数量
@@ -17,8 +17,6 @@ struct Dijkstra{
     int distance; // 总路程
     int time; // 总时间
     int cost; // 总费用
-
-
 };
 
 
