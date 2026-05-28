@@ -2,23 +2,44 @@
 #define GRAPHFINDER_DIJKSTRA_H
 
 #include "data.h"
+#include "commandParse.h"
 
-// 结合data.h中的数据结构, 定义 Dijkstra 结构体来存储输入和输出数据
-struct Dijkstra{
+constexpr int INF = 0x3f3f3f3f;
 
-    // 输入数据
-    int start; // 起点
-    int end; // 终点
-    int weight_type; // 权重类型: 0-路程, 1-时间, 2-费用
-
-    // 输出数据
-    int nodes; // 节点数量
-    int route[N]; // 存储路径
-    int distance; // 总路程
-    int time; // 总时间
-    int cost; // 总费用
+struct PathResult {
+    int node_count = 0;
+    int route[N]{};
+    int total_distance = 0;
+    int total_time = 0;
+    int total_cost = 0;
+    bool feasible = true;
 };
 
+PathResult shortestPath(int start, int end, int weight_type);
 
+PathResult constrainedShortestPath(
+    int start, int end,
+    int optimize_type,
+    int constraint_type,
+    int constraint_limit
+);
 
-#endif //GRAPHFINDER_DIJKSTRA_H
+PathResult waypointPath(
+    int start, int end,
+    const std::vector<int>& waypoints,
+    int weight_type
+);
+
+PathResult toiletAwarePath(
+    int start, int end,
+    int weight_type,
+    bool has_constraint = false,
+    int constraint_type = -1,
+    int constraint_limit = 0
+);
+
+PathResult solve(const RouteRequest& request);
+
+void printPath(const PathResult& path);
+
+#endif // GRAPHFINDER_DIJKSTRA_H

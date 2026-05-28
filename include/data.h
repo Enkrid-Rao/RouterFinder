@@ -13,4 +13,7 @@ extern bool wc[N]; // 表示是否有厕所
 extern std::unordered_map<std::string, int> name_to_id; // 记录每个城市的 id
 extern std::unordered_map<int, std::string> id_to_name; // 记录每个 id 对应的城市名称
 
+void readWc();
+void readEdge();
+
 #endif //GRAPHFINDER_DATA_H

@@ -10,7 +10,7 @@
 // 城市A 城市B 路程 时间 费用
  
 int cityNum = 0;
-int graph[4][N][N] = {0};   // 初始化为0
+int graph[3][N][N] = {0};   // 初始化为0
 bool wc[N] = {false};
 std::unordered_map<std::string, int> name_to_id;
 std::unordered_map<int, std::string> id_to_name;
@@ -62,7 +62,7 @@ void readEdge(){
         std::string cityB=row[1];
         int distance=std::stoi(row[2]);
         int time=std::stoi(row[3]);
-        double money=std::stod(row[4]);
+        int money=std::stoi(row[4]);
         graph[0][name_to_id[cityA]][name_to_id[cityB]]=distance;
         graph[1][name_to_id[cityA]][name_to_id[cityB]]=time;
         graph[2][name_to_id[cityA]][name_to_id[cityB]]=money;
