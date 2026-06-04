@@ -1,5 +1,5 @@
 #include "include/Dijkstra.h"
-#include <cstdio>
+#include <iostream>
 #include <cstring>
 #include <vector>
 #include "include/io.h"
@@ -556,10 +556,9 @@ PathResult solve(const RouteRequest& request)
 // ========== 输出 ==========
 void printPath(const PathResult& path)
 {
-
     if (!path.feasible)
     {
-        printf("无可行路径\n");
+        std::cout << "无可行路径" << std::endl;
         return;
     }
 
@@ -567,10 +566,10 @@ void printPath(const PathResult& path)
     {
         if (i > 0)
         {
-            printf(" -> ");
+            std::cout << " -> ";
         }
-        printf("%s", id_to_name[path.route[i]].c_str());
+        std::cout << id_to_name[path.route[i]];
     }
-    printf("\n路程: %d km  时间: %d h  费用: %d yuan\n",
-           path.total_distance, path.total_time, path.total_cost);
+    std::cout << "\n路程: " << path.total_distance << " km  时间: "
+              << path.total_time << " h  费用: " << path.total_cost << " yuan" << std::endl;
 }
