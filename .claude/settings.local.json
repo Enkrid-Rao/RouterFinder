@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(file:*)",
+      "Bash(git:*)",
+      "Bash(python:*)",
+      "Bash(cd:*)",
+      "Bash(where cmake:*)",
+      "Read(//c/Program Files/CMake/bin/**)",
+      "Read(//c/Program Files \\(x86\\)/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/**)",
+      "Bash(rm:*)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe\" -S \"D:/Projects/RouteFinder\" -B \"D:/Projects/RouteFinder/build2\" -G \"Visual Studio 17 2022\" 2>&1)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe\" --build \"D:/Projects/RouteFinder/build2\" --config Debug 2>&1)",
+      "Bash(\"D:/Projects/RouteFinder/build2/Debug/RouteFinder.exe\" --srt Beijing --dst Beijing --wc --t 2>&1; echo \"EXIT=$?\")",
+      "Bash(cmd.exe //c \"cd /d D:\\\\Projects\\\\RouteFinder\\\\build2\\\\Debug && RouteFinder.exe --srt Beijing --dst Shanghai --wc --t\" 2>&1)"
+    ]
+  }
+}

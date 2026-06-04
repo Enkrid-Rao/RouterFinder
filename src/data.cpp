@@ -2,21 +2,18 @@
 #include<sstream>
 #include<fstream>
 
-// 通过原始输入得到 graph 和 name_to_id
-// 这里的输入格式可以根据需要进行调整, 目前假设输入格式为:
+// Build graph and name_to_id from raw input
+// Input format: city name and toilet status first, then edges:
+// CityA,CityB,distance,time,cost
 
-// 先是每个城市的名称和是否有厕所, 然后是每条边的信息, 包括两个城市的名称, 路程, 时间, 费用, 是否有厕所 
-
-// 城市A 城市B 路程 时间 费用
- 
 int cityNum = 0;
-int graph[3][N][N] = {0};   // 初始化为0
+int graph[3][N][N] = {0};   // initialized to 0
 bool wc[N] = {false};
 std::unordered_map<std::string, int> name_to_id;
 std::unordered_map<int, std::string> id_to_name;
 
 void readWc(){
-    std::string filepath = ".\wc.csv";
+    std::string filepath = "./wc.csv";
     std::ifstream file(filepath);
 
     std::vector<std::vector<std::string>> data;
@@ -32,15 +29,16 @@ void readWc(){
     }
 
     for(const auto& row:data){
-        name_to_id[row[0]]=++cityNum;
+        name_to_id[row[0]]=cityNum;
         id_to_name[cityNum]=row[0];
         wc[cityNum]=row[1]=="true";
+        cityNum++;
     }
 }
 
-// 从文件中读取数据并填充 graph 和 name_to_id
+// Read edges from file and fill graph and name_to_id
 void readEdge(){
-    std::string filepath = ".\data.csv";
+    std::string filepath = "./data.csv";
     std::ifstream file(filepath);
 
     std::vector<std::vector<std::string>> data;
