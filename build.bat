@@ -1,6 +1,6 @@
 @echo off
 
-:: 自动寻找 cmake
+:: Auto-find cmake
 for /f "delims=" %%i in ('where cmake 2^>nul') do set "CMAKE=%%~dpi"
 if defined CMAKE goto :found_cmake
 for /d %%d in ("%ProgramFiles%\JetBrains\CLion*") do (
@@ -18,7 +18,7 @@ for /d %%d in ("%ProgramFiles%\Microsoft Visual Studio\2022\*") do (
 :found_cmake
 if defined CMAKE set "PATH=%CMAKE%;%PATH%"
 
-:: 自动寻找 g++
+:: Auto-find g++
 for /f "delims=" %%i in ('where g++ 2^>nul') do set "MINGW=%%~dpi"
 if defined MINGW goto :found_mingw
 for /d %%d in ("%ProgramFiles%\JetBrains\CLion*") do (
@@ -30,9 +30,9 @@ for /d %%d in ("%ProgramFiles%\JetBrains\CLion*") do (
 :found_mingw
 if defined MINGW set "PATH=%MINGW%;%PATH%"
 
-where cmake >nul 2>&1 || (echo 错误: 未找到 cmake & pause & exit /b 1)
-where g++   >nul 2>&1 || (echo 错误: 未找到 g++   & pause & exit /b 1)
+where cmake >nul 2>&1 || (echo Error: cmake not found & pause & exit /b 1)
+where g++   >nul 2>&1 || (echo Error: g++ not found   & pause & exit /b 1)
 
 cmake -S . -B build -G "MinGW Makefiles"
 cmake --build build
-echo 编译完成!
+echo Build complete!
