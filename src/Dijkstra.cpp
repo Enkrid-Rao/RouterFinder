@@ -98,16 +98,212 @@ PathResult shortestPath(int start, int end, int weight_type)
     return res;
 }
 
-// ========== 约束最短路径 (Label-setting + Pareto dominance) ==========
+// ========== 约束最短路径 ==========
+// 在 constraint_type 维度 ≤ constraint_limit 的条件下, 最小化 optimize_type
+// 如 --Td: optimize=distance, constraint=time, limit=规定时间
+// 使用 Label-setting + Pareto 支配剪枝
+#define MAX_LABELS 16
+
 PathResult constrainedShortestPath(
     int start, int end,
     int optimize_type,
     int constraint_type,
     int constraint_limit
-) 
+)
 {
+    //大数组放 static 区, 避免爆栈 (N=1e4, MAX_LABELS=16 → ~2.5MB)
+    static int opt_val[N][MAX_LABELS];     // 优化维度的当前值
+    static int cons_val[N][MAX_LABELS];    // 约束维度的消耗值
+    static int prev_node[N][MAX_LABELS];   // 前驱节点
+    static int prev_label[N][MAX_LABELS];  // 前驱节点的哪一个 label
+    static int label_cnt[N];               // 每个节点当前 label 数量
+    static int min_opt[N];                 // 每个节点未处理 label 的最小 opt_val
+    static bool settled[N][MAX_LABELS];    // label 是否已锁定
 
+    //初始化
+    for (int i = 0; i < cityNum; i++) {
+        label_cnt[i] = 0;
+        min_opt[i]   = INF;
+        for (int k = 0; k < MAX_LABELS; k++) {
+            settled[i][k] = false;
+        }
+    }
+
+    opt_val[start][0]   = 0;
+    cons_val[start][0]  = 0;
+    prev_node[start][0] = -1;
+    prev_label[start][0] = -1;
+    label_cnt[start]     = 1;
+    min_opt[start]       = 0;
+
+    //主循环: 每次锁定 opt_val 最小的未处理 label
+    while (1) {
+        //找全局 opt_val 最小的未锁定 label
+        int best_u = -1, best_k = -1, best_opt = INF;
+        for (int u = 0; u < cityNum; u++) {
+            if (min_opt[u] >= best_opt)   // 该节点最小的都比当前最优大, 跳过
+            {
+                continue;
+            }
+            for (int k = 0; k < label_cnt[u]; k++) {
+                if (!settled[u][k] && opt_val[u][k] < best_opt) {
+                    best_opt = opt_val[u][k];
+                    best_u   = u;
+                    best_k   = k;
+                }
+            }
+        }
+
+        if (best_u == -1)   // 没有更多 label 可处理
+        {
+            break;
+        }
+
+        //锁定该 label
+        settled[best_u][best_k] = true;
+        //更新该节点的 min_opt
+        min_opt[best_u] = INF;
+        for (int k = 0; k < label_cnt[best_u]; k++) {
+            if (!settled[best_u][k] && opt_val[best_u][k] < min_opt[best_u]) {
+                min_opt[best_u] = opt_val[best_u][k];
+            }
+        }
+
+        //扩展 best_u 的所有邻接边
+        for (int v = 0; v < cityNum; v++) {
+            int w_opt  = graph[optimize_type][best_u][v];
+            int w_cons = graph[constraint_type][best_u][v];
+            if (w_opt == INF || w_opt == 0)    // 无边
+            {
+                continue;
+            }
+            if (w_cons == INF || w_cons == 0)
+            {
+                continue;
+            }
+
+            int new_opt  = opt_val[best_u][best_k]  + w_opt;
+            int new_cons = cons_val[best_u][best_k] + w_cons;
+            if (new_cons > constraint_limit)       // 超出约束限制
+            {
+                continue;
+            }
+
+            //检查新 label 是否被已有 label 支配
+            int dominated = 0;
+            for (int k = 0; k < label_cnt[v]; k++) {
+                if (opt_val[v][k] <= new_opt && cons_val[v][k] <= new_cons) {
+                    dominated = 1;
+                    break;
+                }
+            }
+            if (dominated)
+            {
+                continue;
+            }
+
+            //label 已满且无法淘汰旧 label, 丢弃新 label 防止越界
+            if (label_cnt[v] == MAX_LABELS)
+            {
+                continue;
+            }
+
+            //移除被新 label 支配的旧 label, 同时写入新 label
+            int keep = 0;
+            int done = 0;
+            for (int k = 0; k < label_cnt[v]; k++) {
+                if (new_opt <= opt_val[v][k] && new_cons <= cons_val[v][k]) {
+                    continue;   // 新支配旧, 丢弃旧 label
+                }
+                if (!done && new_opt < opt_val[v][k]) {
+                    //在此处插入新 label, 保持按 opt_val 升序
+                    opt_val[v][keep]    = new_opt;
+                    cons_val[v][keep]   = new_cons;
+                    prev_node[v][keep]  = best_u;
+                    prev_label[v][keep] = best_k;
+                    settled[v][keep]    = false;
+                    keep++;
+                    done = 1;
+                }
+                opt_val[v][keep]    = opt_val[v][k];
+                cons_val[v][keep]   = cons_val[v][k];
+                prev_node[v][keep]  = prev_node[v][k];
+                prev_label[v][keep] = prev_label[v][k];
+                settled[v][keep]    = settled[v][k];
+                keep++;
+            }
+            //如果新 label 的 opt 最大, 追加到末尾
+            if (!done)
+            {
+                opt_val[v][keep]    = new_opt;
+                cons_val[v][keep]   = new_cons;
+                prev_node[v][keep]  = best_u;
+                prev_label[v][keep] = best_k;
+                settled[v][keep]    = false;
+                keep++;
+            }
+            label_cnt[v] = keep;
+            //更新 min_opt[v]
+            if (new_opt < min_opt[v]) {
+                min_opt[v] = new_opt;
+            }
+        }
+    }
+
+    //在终点找 opt_val 最小的 label
+    int best_k = -1;
+    int best_opt = INF;
+    for (int k = 0; k < label_cnt[end]; k++) {
+        if (opt_val[end][k] < best_opt) {
+            best_opt = opt_val[end][k];
+            best_k   = k;
+        }
+    }
+    if (best_k == -1)   // 没有满足约束的路径
+    {
+        PathResult fail;
+        fail.feasible = false;
+        return fail;
+    }
+
+    //回溯路径: 从终点沿 prev_node/prev_label 走到起点
+    int temp[N];
+    int cnt = 0;
+    int cur_u = end, cur_k = best_k;
+    while (cur_u != -1) {
+        temp[cnt++] = cur_u;
+        int nu = prev_node[cur_u][cur_k];
+        int nk = prev_label[cur_u][cur_k];
+        cur_u = nu;
+        cur_k = nk;
+    }
+    for (int i = 0; i < cnt / 2; i++) {
+        int t = temp[i];
+        temp[i] = temp[cnt - 1 - i];
+        temp[cnt - 1 - i] = t;
+    }
+
+    //沿路径累计路程/时间/费用
+    PathResult res;
+    res.node_count = cnt;
+    res.feasible   = true;
+    for (int i = 0; i < cnt; i++)
+    {
+        res.route[i] = temp[i];
+    }
+    res.total_distance = 0;
+    res.total_time     = 0;
+    res.total_cost     = 0;
+    for (int i = 0; i < cnt - 1; i++) {
+        int a = temp[i], b = temp[i + 1];
+        res.total_distance += graph[0][a][b];
+        res.total_time    += graph[1][a][b];
+        res.total_cost    += graph[2][a][b];
+    }
+    return res;
 }
+
+#undef MAX_LABELS
 
 // ========== 途经点路径 ==========
 // start → waypoints[0] → ... → waypoints[count-1] → end
@@ -273,12 +469,28 @@ PathResult toiletAwarePath(
         first[fcnt - 1 - i] = t;
     }
 
-    //第二段: nearest → end
+    //计算第一段消耗的约束维度的量
+    int first_cons = 0;
+    if (has_constraint)
+    {
+        for (int i = 0; i < fcnt - 1; i++) {
+            first_cons += graph[constraint_type][first[i]][first[i + 1]];
+        }
+        if (first_cons > constraint_limit)   // 第一段已超限
+        {
+            PathResult fail;
+            fail.feasible = false;
+            return fail;
+        }
+    }
+
+    //第二段: nearest → end, 约束扣除第一段消耗
     PathResult second;
     if (has_constraint)
     {
         second = constrainedShortestPath(nearest, end, weight_type,
-                                         constraint_type, constraint_limit);
+                                         constraint_type,
+                                         constraint_limit - first_cons);
     }
     else
     {
