@@ -2,12 +2,11 @@
 #include<sstream>
 #include<fstream>
 
-// Build graph and name_to_id from raw input
-// Input format: city name and toilet status first, then edges:
-// CityA,CityB,distance,time,cost
+// 通过原始输入得到 graph 和 name_to_id
+// 输入格式: 先城市名+厕所, 再边信息(城市A,城市B,路程,时间,费用)
 
 int cityNum = 0;
-int graph[3][N][N] = {0};   // initialized to 0
+int graph[3][N][N] = {0};   // 初始化为0
 bool wc[N] = {false};
 std::unordered_map<std::string, int> name_to_id;
 std::unordered_map<int, std::string> id_to_name;
@@ -36,7 +35,7 @@ void readWc(){
     }
 }
 
-// Read edges from file and fill graph and name_to_id
+// 从文件中读取边数据并填充 graph
 void readEdge(){
     std::string filepath = "./data.csv";
     std::ifstream file(filepath);
