@@ -11,7 +11,7 @@
 void setupConsole()
 {
 #ifdef _WIN32
-    SetConsoleOutputCP(65001);
-    SetConsoleCP(65001);
+    SetConsoleOutputCP(936);
+    SetConsoleCP(936);
 #endif
 }

@@ -4,10 +4,9 @@
 #include <cstdlib>
 #include <cstring>
 
-//解析命令行参数, 返回 RouteRequest, 失败返回 nullopt
-std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
+//解析命令行参数, 成功 true, 失败 false
+bool parseCommandLine(int argc, char* argv[], RouteRequest& req)
 {
-    RouteRequest req;
     req.start_id = -1;
     req.end_id   = -1;
 
@@ -25,14 +24,14 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --srt 需要城市名\n");
-                return std::nullopt;
+                return false;
             }
             const char* name = argv[++i];
             auto it = name_to_id.find(name);
             if (it == name_to_id.end())
             {
                 printf("错误: 城市 '%s' 不存在\n", name);
-                return std::nullopt;
+                return false;
             }
             req.start_id = it->second;
         }
@@ -42,14 +41,14 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --dst 需要城市名\n");
-                return std::nullopt;
+                return false;
             }
             const char* name = argv[++i];
             auto it = name_to_id.find(name);
             if (it == name_to_id.end())
             {
                 printf("错误: 城市 '%s' 不存在\n", name);
-                return std::nullopt;
+                return false;
             }
             req.end_id = it->second;
         }
@@ -72,7 +71,7 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --Td 需要限制值\n");
-                return std::nullopt;
+                return false;
             }
             req.has_constraint  = true;
             req.constraint_dim  = WeightDim::TIME;
@@ -84,7 +83,7 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --Tc 需要限制值\n");
-                return std::nullopt;
+                return false;
             }
             req.has_constraint  = true;
             req.constraint_dim  = WeightDim::TIME;
@@ -96,7 +95,7 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --Dt 需要限制值\n");
-                return std::nullopt;
+                return false;
             }
             req.has_constraint  = true;
             req.constraint_dim  = WeightDim::DISTANCE;
@@ -108,7 +107,7 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --Dc 需要限制值\n");
-                return std::nullopt;
+                return false;
             }
             req.has_constraint  = true;
             req.constraint_dim  = WeightDim::DISTANCE;
@@ -120,7 +119,7 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --Ct 需要限制值\n");
-                return std::nullopt;
+                return false;
             }
             req.has_constraint  = true;
             req.constraint_dim  = WeightDim::COST;
@@ -132,7 +131,7 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --Cd 需要限制值\n");
-                return std::nullopt;
+                return false;
             }
             req.has_constraint  = true;
             req.constraint_dim  = WeightDim::COST;
@@ -145,14 +144,14 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
             if (i + 1 >= argc)
             {
                 printf("错误: --wp 需要城市名\n");
-                return std::nullopt;
+                return false;
             }
             const char* name = argv[++i];
             auto it = name_to_id.find(name);
             if (it == name_to_id.end())
             {
                 printf("错误: 城市 '%s' 不存在\n", name);
-                return std::nullopt;
+                return false;
             }
             req.waypoints.push_back(it->second);
         }
@@ -170,13 +169,13 @@ std::optional<RouteRequest> parseCommandLine(int argc, char* argv[])
     if (req.start_id == -1)
     {
         printf("错误: 缺少 --srt 起点\n");
-        return std::nullopt;
+        return false;
     }
     if (req.end_id == -1)
     {
         printf("错误: 缺少 --dst 终点\n");
-        return std::nullopt;
+        return false;
     }
 
-    return req;
+    return true;
 }

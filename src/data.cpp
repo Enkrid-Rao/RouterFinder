@@ -16,7 +16,7 @@ std::unordered_map<std::string, int> name_to_id;
 std::unordered_map<int, std::string> id_to_name;
 
 void readWc(){
-    std::string filepath = ".\wc.csv";
+    std::string filepath = "./wc.csv";
     std::ifstream file(filepath);
 
     std::vector<std::vector<std::string>> data;
@@ -32,15 +32,16 @@ void readWc(){
     }
 
     for(const auto& row:data){
-        name_to_id[row[0]]=++cityNum;
+        name_to_id[row[0]]=cityNum;
         id_to_name[cityNum]=row[0];
         wc[cityNum]=row[1]=="true";
+        cityNum++;
     }
 }
 
 // 从文件中读取数据并填充 graph 和 name_to_id
 void readEdge(){
-    std::string filepath = ".\data.csv";
+    std::string filepath = "./data.csv";
     std::ifstream file(filepath);
 
     std::vector<std::vector<std::string>> data;
