@@ -528,11 +528,16 @@ PathResult toiletAwarePath(
     return total;
 }
 
+<<<<<<< Updated upstream
 // ========== 调度入口 ==========
 PathResult solve(const RouteRequest& request)
 {
     int opt = (int)request.optimize;
     int ctype = (int)request.constraint_dim;
+=======
+// 这个和下面那个是交互,我来写
+PathResult solve(const RouteRequest& request) {
+>>>>>>> Stashed changes
 
     if (request.need_toilet)
     {
@@ -563,6 +568,7 @@ void printPath(const PathResult& path)
         return;
     }
 
+<<<<<<< Updated upstream
     for (int i = 0; i < path.node_count; i++)
     {
         if (i > 0)
@@ -573,4 +579,6 @@ void printPath(const PathResult& path)
     }
     printf("\n路程: %d km  时间: %d h  费用: %d yuan\n",
            path.total_distance, path.total_time, path.total_cost);
+=======
+>>>>>>> Stashed changes
 }
