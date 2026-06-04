@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
-
+#include "include/io.h"
 // ========== 标准 Dijkstra O(N²) ==========
 // 以 graph[weight_type][][] 为权重, 求 start→end 最短路径
 PathResult shortestPath(int start, int end, int weight_type)
@@ -556,6 +556,7 @@ PathResult solve(const RouteRequest& request)
 // ========== 输出 ==========
 void printPath(const PathResult& path)
 {
+
     if (!path.feasible)
     {
         printf("无可行路径\n");

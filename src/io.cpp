@@ -4,14 +4,8 @@
 
 #include "include/io.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-void setupConsole()
+void setChineseIO()
 {
-#ifdef _WIN32
-    SetConsoleOutputCP(936);
-    SetConsoleCP(936);
-#endif
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
 }

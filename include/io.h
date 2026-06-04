@@ -5,6 +5,8 @@
 #ifndef GRAPHFINDER_IO_H
 #define GRAPHFINDER_IO_H
 
-void setupConsole();
+#include <windows.h>
+
+void setChineseIO();
 
 #endif //GRAPHFINDER_IO_H
