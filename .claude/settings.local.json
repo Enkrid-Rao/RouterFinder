@@ -22,7 +22,8 @@
       "Bash(./build/RouteFinder.exe --srt \"Xi'an\" --dst Beijing --t 2>&1)",
       "Bash(ls:*)",
       "Bash(\"D:/Projects/RouteFinder/build/RouteFinder.exe\" --srt \"Xi'an\" --dst Beijing --t 2>&1)",
-      "Read(//d/Projects/**)"
+      "Read(//d/Projects/**)",
+      "Bash(cmd.exe //c \"cd /d D:\\\\Projects\\\\RouteFinder && run.bat --srt Xi'an --dst Beijing --t\" 2>&1)"
     ]
   }
 }
