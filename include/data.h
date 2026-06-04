@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include<vector>
 
 constexpr int N=1e4;
 

@@ -26,7 +26,8 @@ PathResult constrainedShortestPath(
 
 PathResult waypointPath(
     int start, int end,
-    int waypoints[N],
+    const int waypoints[],
+    int waypoint_count,
     int weight_type
 );
 
