@@ -1,7 +1,7 @@
 #ifndef GRAPHFINDER_COMMANDPARSE_H
 #define GRAPHFINDER_COMMANDPARSE_H
 
-// #include <optional>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -22,6 +22,6 @@ struct RouteRequest {
     bool need_toilet = false;
 };
 
-RouteRequest parseCommandLine();
+std::optional<RouteRequest> parseCommandLine(int argc, char* argv[]);
 
-#endif // GRAPHFINDER_COMMANDPARSE_H
+#endif
