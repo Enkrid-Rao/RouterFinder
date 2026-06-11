@@ -1,6 +1,29 @@
 # RouteFinder - 城市路径规划工具
 
-基于 Dijkstra 算法的命令行路径规划工具，支持多种优化目标、约束条件、途经点和厕所优先路径。
+基于 Dijkstra 算法的**命令行**路径规划工具，支持多种优化目标、约束条件、途经点和厕所优先路径。
+
+## 项目结构
+
+```
+RouteFinder/
+├── main.cpp              # 入口
+├── CMakeLists.txt        # CMake 配置
+├── run.bat               # 运行脚本
+├── data.csv              # 城市路线数据
+├── wc.csv                # 城市厕所数据
+├── build/
+│   └── RouteFinder.exe   # 预编译可执行文件
+├── include/
+│   ├── commandParse.h    # 命令行解析
+│   ├── data.h            # 数据结构
+│   ├── Dijkstra.h        # 算法声明
+│   └── io.h              # 控制台编码设置
+└── src/
+    ├── commandParse.cpp  # 命令行解析
+    ├── data.cpp          # CSV 数据读取
+    ├── Dijkstra.cpp      # 核心算法实现
+    └── io.cpp            # UTF-8 控制台编码(控制输出中文)
+```
 
 ## 城市数据
 
@@ -106,28 +129,6 @@ cmake --build .
 
 或在 CLion 中直接打开项目文件夹，CMakeLists.txt 会被自动识别。
 
-## 项目结构
-
-```
-RouteFinder/
-├── main.cpp              # 入口
-├── CMakeLists.txt        # CMake 配置
-├── run.bat               # 运行脚本
-├── data.csv              # 城市路线数据
-├── wc.csv                # 城市厕所数据
-├── build/
-│   └── RouteFinder.exe   # 预编译可执行文件
-├── include/
-│   ├── commandParse.h    # 命令行解析
-│   ├── data.h            # 数据结构
-│   ├── Dijkstra.h        # 算法声明
-│   └── io.h              # 控制台编码设置
-└── src/
-    ├── commandParse.cpp  # C++ 风格命令行解析
-    ├── data.cpp          # CSV 数据读取
-    ├── Dijkstra.cpp      # 核心算法实现
-    └── io.cpp            # UTF-8 控制台编码
-```
 
 ## 编码说明
 
